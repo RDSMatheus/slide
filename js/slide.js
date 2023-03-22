@@ -25,23 +25,44 @@ export default class Slide {
     this.dist.startX = event.clientX;
     console.log("mousedown", this.dist.startX);
     this.wrapper.addEventListener("mousemove", this.onMove);
+    //atribui um valor ao clicar no slide de acordo com o mouse ou toque
+    let moveType;
+    if (event.type === "mousedown") {
+      event.preventDefault();
+      this.dist.startX = event.clientX;
+      console.log("mousedown", this.dist.startX, event.type === "mousedown");
+      moveType = "mousemove";
+    } else {
+      this.dist.startX = event.changedTouches[0].clientX;
+      moveType = "touchmove";
+    }
+    this.wrapper.addEventListener(moveType, this.onMove);
   }
 
   onMove(event) {
     //muda o valor em relação ao movimento do mouse
-    const finalPosition = this.updatePosition(event.clientX);
+    const pointerPosition =
+      event.type === "mousemove"
+        ? event.clientX
+        : event.changedTouches[0].clientX;
+    const finalPosition = this.updatePosition(pointerPosition);
+
     this.moveSlide(finalPosition);
   }
 
   onEnd(event) {
+    const moveType = event.type === "mouseup" ? "mousemove" : "touchmove";
     console.log("acabou");
-    this.wrapper.removeEventListener("mousemove", this.onMove);
+    this.wrapper.removeEventListener("mousemove", this.onMove)
+    this.wrapper.removeEventListener(moveType, this.onMove);
     this.dist.finalPosition = this.dist.movePosition;
   }
 
   addSlideEvents() {
     this.wrapper.addEventListener("mousedown", this.onStart);
+    this.wrapper.addEventListener("touchstart", this.onStart);
     this.wrapper.addEventListener("mouseup", this.onEnd);
+    this.wrapper.addEventListener("touchend", this.onEnd);
   }
 
   bindEvents() {
