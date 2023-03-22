@@ -31,14 +31,13 @@ export class Slide {
     event.preventDefault();
     //atribui um valor ao clicar no slide de acordo com o mouse
     this.dist.startX = event.clientX;
-    console.log("mousedown", this.dist.startX);
+
     this.wrapper.addEventListener("mousemove", this.onMove);
     //atribui um valor ao clicar no slide de acordo com o mouse ou toque
     let moveType;
     if (event.type === "mousedown") {
       event.preventDefault();
       this.dist.startX = event.clientX;
-      console.log("mousedown", this.dist.startX, event.type === "mousedown");
       moveType = "mousemove";
     } else {
       this.dist.startX = event.changedTouches[0].clientX;
@@ -61,7 +60,6 @@ export class Slide {
 
   onEnd(event) {
     const moveType = event.type === "mouseup" ? "mousemove" : "touchmove";
-    console.log("acabou");
     this.wrapper.removeEventListener("mousemove", this.onMove);
     this.wrapper.removeEventListener(moveType, this.onMove);
     this.dist.finalPosition = this.dist.movePosition;
@@ -117,7 +115,6 @@ export class Slide {
   }
 
   changeActiveClass() {
-    console.log(this.slideArray);
     this.slideArray.forEach((item) => item.element.classList.remove("ativo"));
     this.slideArray[this.index.active].element.classList.add(this.activeClass);
   }
@@ -163,7 +160,7 @@ export class Slide {
   }
 }
 
-export class SlideNav extends Slide {
+export default class SlideNav extends Slide {
   constructor(slide, wrapper) {
     super(slide, wrapper);
     this.bindControlEvents();
